@@ -1,0 +1,117 @@
+# FT-R875 archived training configuration, linked to the 24.23 run.
+# Only dataset/output paths were changed for this local release draft.
+init_rand_seed: 1234567891
+dataset_name: fineaction
+train_split:
+- training
+val_split:
+- validation
+dataset:
+  json_file: ./data/fineaction/annotations/annotations_gt_af.json
+  feat_folder: ./data/fineaction/fineaction_mae_g
+  file_prefix: null
+  file_ext: .npy
+  num_classes: 1
+  input_dim: 1408
+  feat_stride: 16
+  num_frames: 16
+  default_fps: 30
+  trunc_thresh: 0.5
+  crop_ratio:
+  - 0.9
+  - 1.0
+  max_seq_len: 2304
+model:
+  backbone_type: DynE
+  fpn_type: identity
+  max_buffer_len_factor: 1.0
+  backbone_arch:
+  - 2
+  - 2
+  - 6
+  n_encoder_win_size: 15
+  regression_range:
+  - - 0
+    - 4
+  - - 4
+    - 8
+  - - 8
+    - 16
+  - - 16
+    - 32
+  - - 32
+    - 64
+  - - 64
+    - 128
+  - - 128
+    - 10000
+  embd_dim: 256
+  mlp_dim: 2048
+  fpn_dim: 256
+  head_dim: 512
+  use_abs_pe: true
+  input_noise: 0.5
+  k: 1.3
+  init_conv_vars: 0.2
+  dyn_head_flag: true
+  dyn_head:
+    budget_loss_lambda: 1.0
+    tau: 1.5
+    init_gate: 1.0
+    type: GeReTanH
+    dyn_type: c
+  head_act: relu
+  mamba_adapter:
+    enabled: true
+    position: neck_only
+    backend: dbm
+    d_state: 16
+    d_conv: 4
+    expand: 1
+    drop_path_rate: 0.3
+    layer_scale_init: 0.0001
+    residual_weight: 0.875
+    use_fast_path: true
+    tuning_variant: mt0_no_decay
+    honor_no_weight_decay: true
+    preserve_parent_rng: true
+  selective_dynamic_scale:
+    enabled: true
+    variant: cls_only
+    reduction: 4
+    min_hidden_dim: 32
+    channel_wise: true
+    temperature: 1.0
+    selection_gate_init: 0.05
+    selection_gate_mode: tanh
+    selection_gate_bound: 0.25
+    selection_gate_lr_scale: 1.0
+    preserve_parent_rng: true
+    active_layers:
+    - 0
+    - 1
+opt:
+  learning_rate: 0.0005
+  eta_min: 5.0e-05
+  warmup_epochs: 10
+  epochs: 6
+  weight_decay: 0.025
+loader:
+  batch_size: 8
+train_cfg:
+  init_loss_norm: 400
+  clip_grad_l2norm: 0.4
+  cls_prior_prob: 0.01
+  center_sample: radius
+  center_sample_radius: 1.5
+  label_smoothing: 0.1
+test_cfg:
+  voting_thresh: 0.95
+  pre_nms_topk: 2000
+  max_seg_num: 200
+  min_score: 0.001
+  multiclass_nms: false
+  nms_sigma: 0.7
+  ext_score_file: ./data/fineaction/classifiers/new_swinB_1x1x256_views2x3_max_label_avg_prob.json
+  duration_thresh: 0.1
+output_folder: ./outputs/

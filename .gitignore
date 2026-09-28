@@ -216,3 +216,67 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# RISTA-specific exclusions
+
+# Environments, credentials and editor state
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+.idea/
+.vscode/
+.DS_Store
+*.pem
+*.key
+*.p12
+credentials*.json
+
+# Python and native extension build products
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+*.egg
+build/
+dist/
+*.so
+*.o
+
+# Data, checkpoints and experiment artifacts (provided separately, if approved)
+data/
+!/activitynet/data/
+/activitynet/data/*
+!/activitynet/data/README.md
+!/fineaction/data/
+/fineaction/data/*
+!/fineaction/data/README.md
+outputs/
+ckpt/
+checkpoints/
+pretrained/
+logs/
+wandb/
+runs/
+third_party_src/
+*.pth
+*.pth.tar
+*.pt
+*.ckpt
+*.npy
+*.npz
+*.h5
+*.hdf5
+*.pkl
+*.log
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Local/private review files must never be copied into this repository
+review/
+backups/
+tmp/
